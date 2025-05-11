@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head><title>Dashboard</title></head>
+<body>
+  <h2>Welcome!</h2>
+  <p id="userEmail">Loading...</p>
+  <p>Your Balance: ₹<span id="userBalance"></span></p>
+  <button onclick="logout()">Logout</button>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script src="script.js"></script>
+  <script>
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        const uid = user.uid;
+        firebase.database().ref("users/" + uid).once("value").then(snapshot => {
+          const data = snapshot.val();
+          document.getElementById("userEmail").textContent = "Hello, " + data.email;
+          document.getElementById("userBalance").textContent = data.balance;
+        });
+      } else {
+        window.location.href = "index.html";
+      }
+    });
+
+    function logout() {
+      firebase.auth().signOut().then(() => {
+        window.location.href = "index.html";
+      });
+    }
+  </script>
+</body>
+  </html>
