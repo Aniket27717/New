@@ -11,6 +11,7 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
+      margin: 0;
     }
     .container {
       background: #fff;
@@ -36,15 +37,18 @@
 <body>
   <div class="container">
     <h2>Sign Up</h2>
-    <input type="email" id="signupEmail" placeholder="Email">
-    <input type="password" id="signupPass" placeholder="Password">
+    <input type="email" id="signupEmail" placeholder="Email" required>
+    <input type="password" id="signupPass" placeholder="Password" required>
     <button onclick="signup()">Sign Up</button>
     <p>Already have an account? <a href="index.html">Login</a></p>
   </div>
 
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js"></script>
-  <script>
+  <script type="module">
+    // Import Firebase modules
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+
+    // Firebase config
     const firebaseConfig = {
       apiKey: "AIzaSyAkef4YRIeJSMpmL4Mm-Y5TOMG_sy0KVc4",
       authDomain: "chat-45809.firebaseapp.com",
@@ -55,16 +59,25 @@
       appId: "1:110882798857:web:98ba57db5c40588231a7d8",
       measurementId: "G-N4TZLZPGCZ"
     };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
 
-    function signup() {
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Signup function
+    window.signup = function () {
       const email = document.getElementById("signupEmail").value;
       const password = document.getElementById("signupPass").value;
-      auth.createUserWithEmailAndPassword(email, password)
-        .then(() => window.location.href = "dashboard.html")
-        .catch(error => alert(error.message));
-    }
+
+      createUserWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          alert("Signup successful!");
+          window.location.href = "dashboard.html";
+        })
+        .catch((error) => {
+          alert("Error: " + error.message);
+        });
+    };
   </script>
 </body>
 </html>
