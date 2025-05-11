@@ -1,35 +1,76 @@
 <!DOCTYPE html>
 <html>
-<head><title>Dashboard</title></head>
+<head>
+  <title>Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background: #fff;
+      padding: 30px 40px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      text-align: center;
+      width: 300px;
+    }
+    h2 { margin-bottom: 15px; }
+    p { font-size: 16px; margin: 10px 0; }
+    button {
+      background-color: #f44336;
+      border: none;
+      color: white;
+      padding: 10px;
+      width: 100%;
+      font-weight: bold;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #d32f2f;
+    }
+  </style>
+</head>
 <body>
-  <h2>Welcome!</h2>
-  <p id="userEmail">Loading...</p>
-  <p>Your Balance: ₹<span id="userBalance"></span></p>
-  <button onclick="logout()">Logout</button>
+  <div class="container">
+    <h2>User Dashboard</h2>
+    <p id="userInfo">Loading...</p>
+    <button onclick="logout()">Logout</button>
+  </div>
 
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-  <script src="script.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js"></script>
   <script>
-    firebase.auth().onAuthStateChanged(user => {
+    const firebaseConfig = {
+      apiKey: "AIzaSyAkef4YRIeJSMpmL4Mm-Y5TOMG_sy0KVc4",
+      authDomain: "chat-45809.firebaseapp.com",
+      databaseURL: "https://chat-45809-default-rtdb.firebaseio.com",
+      projectId: "chat-45809",
+      storageBucket: "chat-45809.firebasestorage.app",
+      messagingSenderId: "110882798857",
+      appId: "1:110882798857:web:98ba57db5c40588231a7d8",
+      measurementId: "G-N4TZLZPGCZ"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    auth.onAuthStateChanged(user => {
       if (user) {
-        const uid = user.uid;
-        firebase.database().ref("users/" + uid).once("value").then(snapshot => {
-          const data = snapshot.val();
-          document.getElementById("userEmail").textContent = "Hello, " + data.email;
-          document.getElementById("userBalance").textContent = data.balance;
-        });
+        document.getElementById("userInfo").innerText = `Welcome, ${user.email}`;
       } else {
         window.location.href = "index.html";
       }
     });
 
     function logout() {
-      firebase.auth().signOut().then(() => {
-        window.location.href = "index.html";
-      });
+      auth.signOut().then(() => window.location.href = "index.html");
     }
   </script>
 </body>
-  </html>
+</html>
